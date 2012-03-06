@@ -149,8 +149,8 @@ The CarContoller interface is used to control the car and get speed, steering an
  * By integrating the data received wire the CarController interface in python, with no simulated errors, the position can be estimated. This estimation will drift very slowly apart from the real position. I assume this happens due to floating point precision, but takes such a long time that it doesn’t really matter.  
 
 = Todo =
- * Do better calculation for the steering. Currently the steering changes the cars angle per unit of time. It is possible to turn your car while standing still.
+ * Do better calculation for the steering. Currently the steering changes the cars angle per unit of time. It is possible to turn your car while standing still. And the gyro and steering values are currently the same.
 
- * Better random speed/steering function, currently it just shakes around at high error values because every 20ms a different speed is calculated. Thereby the gyro and steering values are the same.
+ * Better random speed/steering function, currently it just shakes around at high error values because every 20ms a different speed is calculated. 
 
  * Maybe add a random but constant over time offset to the sensor errors because due to the errors beeing normal distributed the sensors are pretty exact over longer time. 
