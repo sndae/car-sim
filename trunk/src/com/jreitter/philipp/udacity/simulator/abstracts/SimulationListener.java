@@ -1,0 +1,12 @@
+package com.jreitter.philipp.udacity.simulator.abstracts;
+
+import java.awt.Graphics2D;
+
+public interface SimulationListener
+{
+	public void init(CarController crtl, float x, float y, Background background);
+	public void onUpdate(float dt);
+	public void onGPS(float[] pos);
+	public void onCamera(int[][] img);
+	public void onPaint(Graphics2D g);
+}
