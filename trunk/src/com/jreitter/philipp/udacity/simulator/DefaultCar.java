@@ -35,7 +35,6 @@ public class DefaultCar implements Car, Configurable
 		}
 		
 		public float getSpeed(){return retSpeed;}
-		public float getSteer(){return retSteer;}
 		public float getGyro(){return retGyro;}
 		
 		public void setSpeed(float s)
@@ -43,7 +42,7 @@ public class DefaultCar implements Car, Configurable
 			if(s>1.f)s=1.f;
 			else if(s<-1.f)s=-1.f;
 		
-			speed.input(s * maxSpeed);
+			desiredSpeed = s*maxSpeed;
 		}
 
 		public void setSteer(float s)
@@ -51,12 +50,11 @@ public class DefaultCar implements Car, Configurable
 			if(s>1.f)s=1.f;
 			else if(s<-1.f)s=-1.f;
 		
-			steer.input(s * maxSteer);
+			desiredSteer = s*maxSteer;
 		}
 	}
 	
 	//Configuration Variables
-	private float steerSensorError = 0.f;
 	private float speedSensorError = 0.f;
 	private float gyroSensorError = 0.f;
 	
@@ -65,6 +63,8 @@ public class DefaultCar implements Car, Configurable
 	
 	private float maxSpeed = 0.f;
 	private float maxSteer = 0.f;
+
+	private float randomTime = 0.5f;
 	
 	//Other suff
 	private Random r;
@@ -80,10 +80,14 @@ public class DefaultCar implements Car, Configurable
 	private Element speed;
 	private Element steer;
 	
+	private float desiredSteer;
+	private float desiredSpeed;
+	
 	//Randomized Values 
-	private float retSteer;
 	private float retSpeed;
 	private float retGyro;
+	
+	private float time;
 	
 	//Constructor
 	public DefaultCar( )
@@ -91,9 +95,6 @@ public class DefaultCar implements Car, Configurable
 		controller = new DefaultCarController();
 		r = new Random( );
 		
-		x = 200.0f;
-		y = 200.0f;
-		angle = 0.f;	
 		try
 		{
 			if( getClass().getResource("/img/car.png") == null )
@@ -105,6 +106,7 @@ public class DefaultCar implements Car, Configurable
 			e.printStackTrace();
 			System.err.println("Couldn't load img/car.png");
 		}
+		time = 0;
 	}
 	
 	//Getter&Setter
@@ -118,25 +120,30 @@ public class DefaultCar implements Car, Configurable
 	//Update Method
 	public void update(float dt)
 	{
+		time += dt;
+		if( time > randomTime )
+		{
+			speed.input((float)r.nextGaussian(desiredSpeed, speedError*speed.value()));
+			steer.input((float)r.nextGaussian(desiredSteer, steerError*steer.value()));
+			time = 0;
+		}
+			
 		steer.update(dt);
 		speed.update(dt);
 
-		float rndSteer = (float)r.nextGaussian(steer.value(), steerError);
-		float rndSpeed = (float)r.nextGaussian(speed.value(), speedError);
-		retSteer = (float)r.nextGaussian(rndSteer, steerSensorError);
-		retSpeed = (float)r.nextGaussian(rndSpeed, speedSensorError);
+		float dAngle = steer.value()*(speed.value()/maxSpeed);
+		retSpeed = (float)r.nextGaussian(speed.value(), speedSensorError);
 		
-		angle += rndSteer * dt;
-		retGyro = (float)r.nextGaussian(rndSteer, gyroSensorError);
+		angle += dAngle * dt;
+		retGyro = (float)r.nextGaussian(dAngle, gyroSensorError);
 		
-		x += Math.cos(angle)*rndSpeed*dt;
-		y += Math.sin(angle)*rndSpeed*dt;	
+		x += Math.cos(angle)*speed.value()*dt;
+		y += Math.sin(angle)*speed.value()*dt;	
 	}
 
 	@Override
 	public void loadProperties(Properties p) 
 	{
-		steerSensorError = Float.parseFloat(p.getProperty("carSteerSensorError", "0"));
 		speedSensorError = Float.parseFloat(p.getProperty("carSpeedSensorError", "0"));
 		gyroSensorError  = Float.parseFloat(p.getProperty("carGyroSensorError" , "0"));
 		steerError 		 = Float.parseFloat(p.getProperty("carSteerError"	   , "0"));
@@ -145,6 +152,7 @@ public class DefaultCar implements Car, Configurable
 		maxSteer 		 = Float.parseFloat(p.getProperty("carMaxSteer"		   , "0"));	
 		startX 			 = Float.parseFloat(p.getProperty("carStartX"		   , "200"));
 		startY			 = Float.parseFloat(p.getProperty("carStartY"		   , "200"));	
+		randomTime		 = Float.parseFloat(p.getProperty("errorUpdateTime"	   , "0.5"));	
 		
 		float T = Float.parseFloat(p.getProperty("carSpeedT", "0"));
 		if(T > 0.f) speed = new PT1(T);
@@ -171,7 +179,7 @@ public class DefaultCar implements Car, Configurable
 	{
 		x = startX;
 		y = startY;
-		angle = 0.f;
+		angle = 0;	
 		speed.input(0); 
 		speed.value(0);
 		steer.input(0); 

@@ -3,7 +3,6 @@ package com.jreitter.philipp.udacity.simulator.abstracts;
 public interface CarController 
 {
 	public float getSpeed();
-	public float getSteer();
 	public float getGyro();
 	
 	/**

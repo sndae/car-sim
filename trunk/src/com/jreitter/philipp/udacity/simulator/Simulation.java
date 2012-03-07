@@ -83,7 +83,7 @@ public class Simulation implements Runnable, Iterable<SimulationObject>
 		for(SimulationObject o : objects)
 			o.init();
 		
-		listener.init(car.getController(), car.getX(), car.getY(), world);
+		listener.init(car.getController(), world);
 
 		setRunning(true);
 		while(isRunning())
