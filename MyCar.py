@@ -26,15 +26,15 @@ class MyListener(SimulationListener):
     gpsx = 0
     gpsy = 0
     
-    def init(self, ctrl, sx, sy, background):
+    def init(self, ctrl, background):
         self.car = ctrl
         self.bg = background
         self.angle = 0
-        self.x = sx
-        self.y = sy
+        self.x = cfg.carStartX
+        self.y = cfg.carStartY
         ctrl.setSteer(.5)
         ctrl.setSpeed(1.)
-        self.p = utils.init(self.p, background, sx, sy)
+        self.p = utils.init(self.p, background, self.x, self.y)
 
     
     def onUpdate(self, dt):

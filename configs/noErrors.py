@@ -2,7 +2,6 @@
 fileName="noErrors.py"
 
 #Variance for return values
-carSteerSensorError=0
 carSpeedSensorError=0
 carGyroSensorError=0
 
@@ -34,3 +33,6 @@ cameraImageNoise=0
 #50/update = freq (int only)
 cameraUpdate=10
 gpsSensorUpdate=10
+
+#every randomUpdateTime (in sec) new random values for Calculation are generated
+randomUpdateTime = 1
