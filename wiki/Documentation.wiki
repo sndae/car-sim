@@ -36,12 +36,12 @@ All values are either in Pixel or Radiant.
 The following parameters are avaliable:
  * *Sensor Errors* define the variance of a normal distributed error  with a mean of the real value 
   * *carSteerSensorError*
-  * *carSpeedSensorError*
+  * *carSpeedSensorError* removed in 0.2
   * *carGyroSensorError*
   * *cameraImageNoise* is the probability of a wrong color given back
   * *gpsSensorNoise*
 
- * *Calculation Errors* define the variance of a normal distributed error that is used for calculating the cars next position. Those values are not smooth which results in a shaky movement.
+ * *Calculation Errors* every randomUpdateTime (in sec) new random values for Calculation are generated, the values are the variance as percentage of current speed/steer (so it will always go in a straight line)
   * *carSteerError*
   * *carSpeedError*
 
@@ -63,6 +63,9 @@ The following parameters are avaliable:
  * *Sensor Update Rates* define the update rate = 50hz/Update. Integers only. 
   * *cameraUpdate*
   * *gpsSensorUpdate*
+
+ * *randomUpdateTime* every randomUpdateTime (in sec) new random values for Calculation are generated
+
 
 = Interfaces = 
 
@@ -149,8 +152,8 @@ The CarContoller interface is used to control the car and get speed, steering an
  * By integrating the data received wire the CarController interface in python, with no simulated errors, the position can be estimated. This estimation will drift very slowly apart from the real position. I assume this happens due to floating point precision, but takes such a long time that it doesn’t really matter.  
 
 = Todo =
- * Do better calculation for the steering. Currently the steering changes the cars angle per unit of time. It is possible to turn your car while standing still. And the gyro and steering values are currently the same.
+ * Do better calculation for the steering. Currently the steering changes the cars angle per unit of time. It is possible to turn your car while standing still. And the gyro and steering values are currently the same. *done, bicycle model in 0.2*
 
- * Better random speed/steering function, currently it just shakes around at high error values because every 20ms a different speed is calculated. 
+ * Better random speed/steering function, currently it just shakes around at high error values because every 20ms a different speed is calculated. *done in 0.2* 
 
  * Maybe add a random but constant over time offset to the sensor errors because due to the errors beeing normal distributed the sensors are pretty exact over longer time. 
