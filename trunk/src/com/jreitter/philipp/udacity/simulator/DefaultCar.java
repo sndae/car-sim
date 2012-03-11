@@ -52,11 +52,6 @@ public class DefaultCar implements Car, Configurable
 		
 			desiredSteer = s*maxSteer;
 		}
-		
-		public float[] get()
-		{
-			return( new float[]{ x, y, angle });
-		}
 	}
 	
 	//Configuration Variables
