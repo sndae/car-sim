@@ -52,6 +52,11 @@ public class DefaultCar implements Car, Configurable
 		
 			desiredSteer = s*maxSteer;
 		}
+		
+		public float[] get()
+		{
+			return( new float[]{ x, y, angle });
+		}
 	}
 	
 	//Configuration Variables
@@ -65,6 +70,8 @@ public class DefaultCar implements Car, Configurable
 	private float maxSteer = 0.f;
 
 	private float randomTime = 0.5f;
+	
+	private float carLength = 100.f;
 	
 	//Other suff
 	private Random r;
@@ -134,11 +141,27 @@ public class DefaultCar implements Car, Configurable
 		float dAngle = steer.value()*(speed.value()/maxSpeed);
 		retSpeed = (float)r.nextGaussian(speed.value(), speedSensorError);
 		
-		angle += dAngle * dt;
 		retGyro = (float)r.nextGaussian(dAngle, gyroSensorError);
 		
-		x += Math.cos(angle)*speed.value()*dt;
-		y += Math.sin(angle)*speed.value()*dt;	
+		float tan = (float)Math.tan(steer.value());
+		float dist = speed.value()*dt;
+        float b = (dist/carLength) * tan;
+        
+        if(b >= 0.001)
+        {
+            float R = carLength/tan;
+            float cx = (x - (float)Math.sin(angle) * R);
+            float cy = (y + (float)Math.cos(angle) * R);
+            x = (cx + (float)Math.sin(angle+b) * R);
+            y = (cy - (float)Math.cos(angle+b) * R);
+            angle = (float)((angle+b)%(2.*Math.PI));
+        }
+        else
+        {
+            x = (float)(x + dist * Math.cos(angle));
+            y = (float)(y + dist * Math.sin(angle));
+        }
+        
 	}
 
 	@Override
@@ -153,6 +176,7 @@ public class DefaultCar implements Car, Configurable
 		startX 			 = Float.parseFloat(p.getProperty("carStartX"		   , "200"));
 		startY			 = Float.parseFloat(p.getProperty("carStartY"		   , "200"));	
 		randomTime		 = Float.parseFloat(p.getProperty("errorUpdateTime"	   , "0.5"));	
+		carLength		 = Float.parseFloat(p.getProperty("carLength"	   	   , "100"));	
 		
 		float T = Float.parseFloat(p.getProperty("carSpeedT", "0"));
 		if(T > 0.f) speed = new PT1(T);
@@ -180,6 +204,7 @@ public class DefaultCar implements Car, Configurable
 		x = startX;
 		y = startY;
 		angle = 0;	
+		time = randomTime;
 		speed.input(0); 
 		speed.value(0);
 		steer.input(0); 

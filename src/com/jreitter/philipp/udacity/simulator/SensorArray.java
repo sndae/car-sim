@@ -34,7 +34,7 @@ public class SensorArray implements SimulationObject
 		gpsSensorNoise 	 = Float.parseFloat(p.getProperty("gpsSensorNoise"  , "0"));
 		cameraImageNoise = Float.parseFloat(p.getProperty("cameraImageNoise", "0"));	
 		gpsUpdate = Integer.parseInt(p.getProperty("cameraUpdate","10"));
-		cameraUpdate = Integer.parseInt(p.getProperty("gpsSensorUpdate","50"));
+		cameraUpdate = Integer.parseInt(p.getProperty("gpsSensorUpdate","10"));
 	}
 
 	public int[][] getCameraImage() 
