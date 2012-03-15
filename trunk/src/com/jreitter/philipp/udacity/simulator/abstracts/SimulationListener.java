@@ -9,4 +9,5 @@ public interface SimulationListener
 	public void onGPS(float[] pos);
 	public void onCamera(int[][] img);
 	public void onPaint(Graphics2D g);
+	public void onScanner(int[][] dots);
 }

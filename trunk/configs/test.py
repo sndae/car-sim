@@ -1,19 +1,24 @@
 #Filename for easy use
-fileName="test.py"
+fileName="noErrors.py"
+mapFile="testMap"
 
 #Variance for return values
 carSpeedSensorError=30
 carGyroSensorError=0
 
-#Percentage for calculation
+#Variance for calculation
 carSteerError=0
 carSpeedError=0
 
 #Car Settings
 carMaxSpeed=100
 carMaxSteer=1
-carStartX=400
-carStartY=50
+carStartX=55
+carStartY=80
+carStartAngle=-1.57075
+#carStartX=400
+#carStartY=100
+#carStartAngle=0
 carLength=100
 
 #First order Lag, T=0->no Lag
@@ -34,6 +39,8 @@ cameraImageNoise=0
 #50/update = freq (int only)
 cameraUpdate=10
 gpsSensorUpdate=10
+laserScannerUpdate=10
+laserScannerRange=200
 
-#every randomUpdateTime (in sec) new random values for Calculation are generated
-randomUpdateTime = 0.5
+#every errorUpdateTime (in sec) new random values for Calculation are generated
+errorUpdateTime = 0

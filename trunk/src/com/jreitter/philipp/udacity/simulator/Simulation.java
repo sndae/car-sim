@@ -90,10 +90,10 @@ public class Simulation implements Runnable, Iterable<SimulationObject>
 		{
 			long time = System.currentTimeMillis();
 			
+			listener.onUpdate(0.02f);
+			
 			for(SimulationObject o : objects)
 				o.update(0.02f);
-			
-			listener.onUpdate(0.02f);
 			
 			if(visual!=null)
 			{
@@ -117,5 +117,36 @@ public class Simulation implements Runnable, Iterable<SimulationObject>
 	@Override
 	public Iterator<SimulationObject> iterator() {
 		return objects.iterator();
+	}
+	
+	public static boolean runa = true;
+	
+	@SuppressWarnings("deprecation")
+	public static void main(String[] args) throws InterruptedException, IOException
+	{
+		
+		Thread d = new Thread()
+		{ 
+			long start = 0;
+			public void run()
+			{
+				while(runa)
+				{
+					if( start == 0) start = System.currentTimeMillis();
+					System.out.println(System.currentTimeMillis()-start);
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		d.run();
+		
+		while( System.in.read() == -1) Thread.sleep(10);
+		
+		runa = false;
+		d.stop(); 
 	}
 }
