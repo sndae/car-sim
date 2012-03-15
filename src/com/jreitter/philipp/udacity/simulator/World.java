@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Properties;
 
 import com.jreitter.philipp.udacity.simulator.abstracts.Background;
@@ -24,14 +25,18 @@ public class World implements Configurable, SimulationObject, Background
 	
 	private BufferedImage bgImage;
 	
+	private WallMap wallMap;
+	
 	public World()
 	{
 		r = new Random();
+		wallMap = new WallMap();
 	}	
 	
 	public int getSpacint(){return bgSpacing;}
 	public int getHeight(){return height;}	
 	public int getWidth(){return width;}
+	public boolean isInsideWall(int x, int y){ return wallMap.isInsideWall(x, y);}
 	
 	@Override
 	public void loadProperties(Properties p) 
@@ -45,8 +50,18 @@ public class World implements Configurable, SimulationObject, Background
 			throw new IllegalArgumentException("Height/Width should be devidable by spacing!");
 		
 		background = new int[width][height];
+		
+		try
+		{
+		String mapFile = p.getProperty("mapFile", null);
+		if(mapFile!=null)
+			wallMap.loadFromFile(new File(mapFile.replace("\"", "")));
+		}catch(Exception e)
+		{
+			System.err.println("Error loading Map File!");
+			e.printStackTrace();
+		}
 	}
-
 	private void bufferBackground()
 	{
 		bgImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -91,13 +106,12 @@ public class World implements Configurable, SimulationObject, Background
 	public void onPaint(Graphics2D g) 
 	{
 		g.drawImage(bgImage, 0, 0, null);
-		//foreach object in object list: paint
+		wallMap.paint(g);
 	}
 
 	@Override
 	public void init() 
 	{
-		//foreach object in object list: init
 		randomBackground();
 		bufferBackground();
 	}
@@ -105,7 +119,6 @@ public class World implements Configurable, SimulationObject, Background
 	@Override
 	public void update(float dt) 
 	{
-		//foreach object in object list: update
 		
 	}
 

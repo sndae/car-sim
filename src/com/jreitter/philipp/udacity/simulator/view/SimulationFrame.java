@@ -24,7 +24,7 @@ public class SimulationFrame extends JFrame
 		add(simulationPanel, BorderLayout.CENTER);
 		add(controlPanel, BorderLayout.SOUTH);
 		
-		setBounds(100, 100, s.getWorld().getWidth()+10, s.getWorld().getHeight()+30);
+		setBounds(100, 100, s.getWorld().getWidth()+10, s.getWorld().getHeight()+60);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }

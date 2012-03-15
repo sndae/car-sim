@@ -25,10 +25,12 @@ public class DefaultCar implements Car, Configurable
 	 * CarController class is used for data encapsulation.
 	 * While user gets noisy values from the controller, 
 	 * the simulation can get real values from Car class.
-	 * As long as we don't give the CarController to user we are fine.
+	 * As long as we don't give the Car to user we are fine.
+	 * 
+	 * thats deprecated, since i want real the focus is no more on 
+	 * pure localization, i want real values for path planning
 	 */
 	public class DefaultCarController implements CarController
-	//give me friend classes java, so i can put this in another file...!
 	{
 		private DefaultCarController()
 		{
@@ -51,6 +53,16 @@ public class DefaultCar implements Car, Configurable
 			else if(s<-1.f)s=-1.f;
 		
 			desiredSteer = s*maxSteer;
+		}
+		
+		public float[] getPos()
+		{
+			return new float[]{x,y};
+		}
+		
+		public float getAngle()
+		{
+			return angle;
 		}
 	}
 	
@@ -77,6 +89,7 @@ public class DefaultCar implements Car, Configurable
 	private float y;
 	private float startX;
 	private float startY;
+	private float startA;
 	private float angle;
 	
 	private Element speed;
@@ -142,7 +155,7 @@ public class DefaultCar implements Car, Configurable
 		float dist = speed.value()*dt;
         float b = (dist/carLength) * tan;
         
-        if(b >= 0.001)
+        if(Math.abs(b) >= 0.001)
         {
             float R = carLength/tan;
             float cx = (x - (float)Math.sin(angle) * R);
@@ -170,6 +183,7 @@ public class DefaultCar implements Car, Configurable
 		maxSteer 		 = Float.parseFloat(p.getProperty("carMaxSteer"		   , "0"));	
 		startX 			 = Float.parseFloat(p.getProperty("carStartX"		   , "200"));
 		startY			 = Float.parseFloat(p.getProperty("carStartY"		   , "200"));	
+		startA			 = Float.parseFloat(p.getProperty("carStartAngle"	   , "0"));	
 		randomTime		 = Float.parseFloat(p.getProperty("errorUpdateTime"	   , "0.5"));	
 		carLength		 = Float.parseFloat(p.getProperty("carLength"	   	   , "100"));	
 		
@@ -198,7 +212,7 @@ public class DefaultCar implements Car, Configurable
 	{
 		x = startX;
 		y = startY;
-		angle = 0;	
+		angle = startA;	
 		time = randomTime;
 		speed.input(0); 
 		speed.value(0);
