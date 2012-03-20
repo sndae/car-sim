@@ -64,6 +64,11 @@ public class DefaultCar implements Car, Configurable
 		{
 			return angle;
 		}
+		
+		public void forceUpdate()
+		{
+			time = randomTime+1;
+		}
 	}
 	
 	//Configuration Variables
@@ -98,11 +103,15 @@ public class DefaultCar implements Car, Configurable
 	private float desiredSteer;
 	private float desiredSpeed;
 	
+	private float currentSpeedErrror;
+	private float currentSteerErrror;
+	
 	//Randomized Values 
 	private float retSpeed;
 	private float retGyro;
 	
 	private float time;
+	
 	
 	//Constructor
 	public DefaultCar( )
@@ -138,18 +147,16 @@ public class DefaultCar implements Car, Configurable
 		time += dt;
 		if( time > randomTime )
 		{
-			speed.input((float)r.nextGaussian(desiredSpeed, speedError*speed.value()));
-			steer.input((float)r.nextGaussian(desiredSteer, steerError*steer.value()));
+			currentSpeedErrror = (float)r.nextGaussian(0, speedError*speed.value());
+			currentSteerErrror = (float)r.nextGaussian(0, steerError*steer.value());
 			time = 0;
 		}
 			
-		steer.update(dt);
-		speed.update(dt);
-
-		float dAngle = steer.value()*(speed.value()/maxSpeed);
-		retSpeed = (float)r.nextGaussian(speed.value(), speedSensorError);
+		speed.input(desiredSpeed+currentSpeedErrror);
+		steer.input(desiredSteer+currentSteerErrror);
 		
-		retGyro = (float)r.nextGaussian(dAngle, gyroSensorError);
+		steer.update(dt);
+		speed.update(dt);		
 		
 		float tan = (float)Math.tan(steer.value());
 		float dist = speed.value()*dt;
@@ -170,6 +177,8 @@ public class DefaultCar implements Car, Configurable
             y = (float)(y + dist * Math.sin(angle));
         }
         
+        retSpeed = (float)r.nextGaussian(speed.value(), speedSensorError);
+        retGyro = (float)r.nextGaussian(b, gyroSensorError);
 	}
 
 	@Override

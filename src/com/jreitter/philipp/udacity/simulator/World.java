@@ -37,6 +37,7 @@ public class World implements Configurable, SimulationObject, Background
 	public int getHeight(){return height;}	
 	public int getWidth(){return width;}
 	public boolean isInsideWall(int x, int y){ return wallMap.isInsideWall(x, y);}
+	public int[][] getBackground(){return background;}
 	
 	@Override
 	public void loadProperties(Properties p) 
@@ -49,7 +50,7 @@ public class World implements Configurable, SimulationObject, Background
 			height%bgSpacing != 0 )
 			throw new IllegalArgumentException("Height/Width should be devidable by spacing!");
 		
-		background = new int[width][height];
+		background = new int[width/bgSpacing][height/bgSpacing];
 		
 		try
 		{
@@ -93,9 +94,9 @@ public class World implements Configurable, SimulationObject, Background
 	
 	private void randomBackground()
 	{
-		for( int x = 0; x < width; x++)
+		for( int x = 0; x < width/bgSpacing; x++)
 		{
-			for( int y = 0; y < height; y++)
+			for( int y = 0; y < height/bgSpacing; y++)
 			{
 				background[x][y] = r.nextInt(2);
 			}
