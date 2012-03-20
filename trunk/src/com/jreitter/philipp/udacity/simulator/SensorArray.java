@@ -46,13 +46,13 @@ public class SensorArray implements SimulationObject
 	{
 		Car c = simulation.getCar();
 		World w = simulation.getWorld();
-				
+		
 		int i = w.getColorAtPixel(c.getX(),c.getY());
 		if(r.nextFloat()>(1.f-cameraImageNoise)) //cuz [0,1[
 		{
 			i=(i+1)&1;
 		}
-
+		
 		return new int[][]{{i}};
 	}
 	
